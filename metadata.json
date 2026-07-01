@@ -1,0 +1,8 @@
+{
+  "name": "TravelGo",
+  "description": "A full-featured, responsive, and animated modern travel website with destination exploration, search filter engines, interactive tour packages, testimonials, a dynamic booking wizard, and an AI-style interactive itinerary planner.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

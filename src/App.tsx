@@ -31,6 +31,7 @@ export default function App() {
   const [bookingType, setBookingType] = useState<'flight' | 'hotel' | 'tour' | 'car'>('tour');
   const [bookingTitle, setBookingTitle] = useState('Standard Tour Package');
   const [bookingPrice, setBookingPrice] = useState(1000);
+  const [viewingBooking, setViewingBooking] = useState<Booking | null>(null);
 
   // History slide-over panel
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
@@ -72,6 +73,7 @@ export default function App() {
     title: string,
     price: number
   ) => {
+    setViewingBooking(null);
     setBookingType(type);
     setBookingTitle(title);
     setBookingPrice(price);
@@ -91,13 +93,11 @@ export default function App() {
 
   const handleViewTicketFromHistory = (booking: Booking) => {
     // Re-open booking modal straight into the ticket view
+    setViewingBooking(booking);
     setBookingType(booking.type);
     setBookingTitle(booking.title);
     setBookingPrice(booking.totalPrice);
     setIsBookingOpen(true);
-    // Note: Since BookingModal defaults to step 1, let's trigger it.
-    // In our BookingModal setup, we can re-hydrate if we wanted, or simply trigger a fresh checkout booking.
-    // To make this super smooth, let's let the user view current checkout.
   };
 
   return (
@@ -145,11 +145,15 @@ export default function App() {
       {/* Slide-over panels / Modals */}
       <BookingModal
         isOpen={isBookingOpen}
-        onClose={() => setIsBookingOpen(false)}
+        onClose={() => {
+          setIsBookingOpen(false);
+          setViewingBooking(null);
+        }}
         initialType={bookingType}
         initialTitle={bookingTitle}
         initialPrice={bookingPrice}
         onBookingSuccess={handleBookingSuccess}
+        viewingBooking={viewingBooking}
       />
 
       <BookingHistory

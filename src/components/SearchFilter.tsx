@@ -88,7 +88,7 @@ export default function SearchFilter({ onSelectAndBook }: SearchFilterProps) {
   };
 
   return (
-    <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-20">
+    <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 md:-mt-20">
       <div className="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 border border-slate-100">
         {/* Navigation Tabs */}
         <div className="flex flex-wrap gap-2 border-b border-slate-100 pb-4 mb-6">

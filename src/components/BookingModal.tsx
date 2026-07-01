@@ -10,6 +10,7 @@ interface BookingModalProps {
   initialTitle: string;
   initialPrice: number;
   onBookingSuccess: (booking: Booking) => void;
+  viewingBooking?: Booking | null;
 }
 
 export default function BookingModal({
@@ -19,6 +20,7 @@ export default function BookingModal({
   initialTitle,
   initialPrice,
   onBookingSuccess,
+  viewingBooking,
 }: BookingModalProps) {
   const [step, setStep] = useState(1);
   const [type, setType] = useState(initialType);
@@ -52,23 +54,47 @@ export default function BookingModal({
   // Load parent choices on trigger open
   useEffect(() => {
     if (isOpen) {
-      setType(initialType);
-      setTitle(initialTitle);
-      setBasePrice(initialPrice);
-      setDestination(initialTitle.replace(' Standard', '').replace(' Package', '').replace(' Standard', ''));
-      setStep(1);
-      // reset custom fields
-      setPassengerName('');
-      setPassengerEmail('');
-      setPassengerPhone('');
-      setSelectedSeat(null);
-      setExtraOptions([]);
-      setCardNumber('');
-      setCardExpiry('');
-      setCardCVC('');
-      setWarning(null);
+      if (viewingBooking) {
+        setType(viewingBooking.type);
+        setTitle(viewingBooking.title);
+        setBasePrice(viewingBooking.totalPrice);
+        setDestination(viewingBooking.destination);
+        setCheckIn(viewingBooking.checkIn);
+        setCheckOut(viewingBooking.checkOut);
+        setAdults(viewingBooking.travelers.adults);
+        setChildren(viewingBooking.travelers.children);
+        setPassengerName(viewingBooking.passengerName);
+        setPassengerEmail(viewingBooking.passengerEmail);
+        setPassengerPhone(viewingBooking.passengerPhone);
+        if (viewingBooking.classType) {
+          setClassType(viewingBooking.classType);
+        }
+        if (viewingBooking.extraOptions) {
+          setExtraOptions(viewingBooking.extraOptions);
+        } else {
+          setExtraOptions([]);
+        }
+        setStep(5); // Jumps straight to digital voucher
+        setWarning(null);
+      } else {
+        setType(initialType);
+        setTitle(initialTitle);
+        setBasePrice(initialPrice);
+        setDestination(initialTitle.replace(' Standard', '').replace(' Package', '').replace(' Standard', ''));
+        setStep(1);
+        // reset custom fields
+        setPassengerName('');
+        setPassengerEmail('');
+        setPassengerPhone('');
+        setSelectedSeat(null);
+        setExtraOptions([]);
+        setCardNumber('');
+        setCardExpiry('');
+        setCardCVC('');
+        setWarning(null);
+      }
     }
-  }, [isOpen, initialType, initialTitle, initialPrice]);
+  }, [isOpen, initialType, initialTitle, initialPrice, viewingBooking]);
 
   const handleNextStep = () => {
     setWarning(null);
@@ -657,7 +683,9 @@ export default function BookingModal({
                       </div>
                       <div className="text-right">
                         <span className="text-[10px] text-slate-400 font-bold block uppercase mb-0.5">booking date</span>
-                        <span className="text-slate-800 font-semibold">{new Date().toLocaleDateString()}</span>
+                        <span className="text-slate-800 font-semibold">
+                          {viewingBooking ? viewingBooking.bookingDate : new Date().toLocaleDateString()}
+                        </span>
                       </div>
                     </div>
 

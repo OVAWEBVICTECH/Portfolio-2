@@ -185,13 +185,13 @@ export default function BookingModal({
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4 overflow-y-auto">
+      <div className="fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex justify-center items-start sm:items-center p-4 overflow-y-auto">
         <motion.div
           initial={{ scale: 0.95, y: 20, opacity: 0 }}
           animate={{ scale: 1, y: 0, opacity: 1 }}
           exit={{ scale: 0.95, y: 20, opacity: 0 }}
           transition={{ type: 'spring', damping: 25 }}
-          className="bg-white rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl border border-slate-100 flex flex-col relative my-8"
+          className="bg-white rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl border border-slate-100 flex flex-col relative my-4 sm:my-8"
         >
           {/* Header */}
           <div className="bg-slate-900 text-white p-6 flex justify-between items-center shrink-0">

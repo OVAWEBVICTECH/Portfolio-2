@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Play, Star, Users, MapPin, Award, X, Volume2, VolumeX } from 'lucide-react';
+import { Play, Star, Users, MapPin, Award, X, Volume2, VolumeX, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface HeroProps {
   onExploreTours: () => void;
@@ -9,6 +9,51 @@ interface HeroProps {
 export default function Hero({ onExploreTours }: HeroProps) {
   const [showVideo, setShowVideo] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const videoSlides = [
+    {
+      title: '📍 Maldives Aerial Drone Tour',
+      url: 'https://assets.mixkit.co/videos/preview/mixkit-beautiful-aerial-view-of-a-tropical-beach-and-sea-34282-large.mp4',
+      bg: 'https://images.unsplash.com/photo-1514282401047-d79a71a590e8?auto=format&fit=crop&w=800&q=80'
+    },
+    {
+      title: '📍 Santorini Sunset & Caldera Tour',
+      url: 'https://assets.mixkit.co/videos/preview/mixkit-greece-santorini-coastal-town-with-white-houses-44122-large.mp4',
+      bg: 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?auto=format&fit=crop&w=800&q=80'
+    },
+    {
+      title: '📍 Eiffel Tower & Paris City Tour',
+      url: 'https://assets.mixkit.co/videos/preview/mixkit-eiffel-tower-in-paris-with-blue-sky-44123-large.mp4',
+      bg: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=80'
+    },
+    {
+      title: '📍 Dubai Marina & Skyline Tour',
+      url: 'https://assets.mixkit.co/videos/preview/mixkit-dubai-marina-skyscrapers-and-waterway-44124-large.mp4',
+      bg: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=800&q=80'
+    }
+  ];
+
+  useEffect(() => {
+    if (showVideo && videoRef.current) {
+      videoRef.current.load();
+      const playPromise = videoRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.catch((error) => {
+          console.log("Playback failed:", error);
+        });
+      }
+    }
+  }, [showVideo, currentSlide]);
+
+  const handleNextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % videoSlides.length);
+  };
+
+  const handlePrevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + videoSlides.length) % videoSlides.length);
+  };
 
   const stats = [
     { value: '15k+', label: 'Happy Travelers', icon: Users, color: 'text-blue-500 bg-blue-50' },
@@ -125,47 +170,89 @@ export default function Hero({ onExploreTours }: HeroProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4"
+            className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex items-center justify-center p-4"
           >
             <button
               onClick={() => setShowVideo(false)}
-              className="absolute top-6 right-6 p-3 rounded-full bg-white/10 hover:bg-white/25 text-white transition-colors cursor-pointer"
+              className="absolute top-6 right-6 p-3 rounded-full bg-white/10 hover:bg-white/25 text-white transition-colors cursor-pointer z-55"
             >
               <X className="h-6 w-6" />
             </button>
 
-            <motion.div
-              initial={{ scale: 0.9, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
-              transition={{ type: 'spring', damping: 25 }}
-              className="relative w-full max-w-5xl aspect-video rounded-3xl overflow-hidden shadow-2xl border border-white/10"
-            >
-              {/* Drone video of beach */}
-              <video
-                src="https://assets.mixkit.co/videos/preview/mixkit-beautiful-aerial-view-of-a-tropical-beach-and-sea-34282-large.mp4"
-                autoPlay
-                loop
-                muted={isMuted}
-                playsInline
-                className="w-full h-full object-cover"
-              />
+            {/* Slider container */}
+            <div className="relative w-full max-w-5xl flex items-center justify-between px-2 sm:px-12">
+              
+              {/* Left arrow */}
+              <button
+                onClick={handlePrevSlide}
+                className="absolute left-4 sm:left-6 z-50 p-2 sm:p-3 rounded-full bg-slate-900/60 backdrop-blur-md text-white border border-white/10 hover:bg-slate-800/80 transition-all cursor-pointer group"
+              >
+                <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6 transition-transform group-hover:-translate-x-0.5" />
+              </button>
 
-              <div className="absolute bottom-6 right-6 flex items-center space-x-3">
-                <button
-                  onClick={() => setIsMuted(!isMuted)}
-                  className="p-3 rounded-full bg-slate-900/80 backdrop-blur-md text-white border border-white/10 hover:bg-slate-800 transition-all cursor-pointer"
-                >
-                  {isMuted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
-                </button>
-              </div>
+              <motion.div
+                key={currentSlide}
+                initial={{ opacity: 0, scale: 0.95, x: 20 }}
+                animate={{ opacity: 1, scale: 1, x: 0 }}
+                exit={{ opacity: 0, scale: 0.95, x: -20 }}
+                transition={{ type: 'spring', damping: 25, stiffness: 120 }}
+                className="relative w-full aspect-video rounded-3xl overflow-hidden shadow-2xl border border-white/10"
+              >
+                {/* Video element */}
+                <video
+                  ref={videoRef}
+                  src={videoSlides[currentSlide].url}
+                  poster={videoSlides[currentSlide].bg}
+                  autoPlay
+                  loop
+                  muted={isMuted}
+                  playsInline
+                  className="w-full h-full object-cover"
+                />
 
-              <div className="absolute top-6 left-6 pointer-events-none">
-                <span className="px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-950/80 backdrop-blur-md text-blue-300 border border-white/10">
-                  📍 Maldives Aerial Drone Tour
-                </span>
-              </div>
-            </motion.div>
+                {/* Bottom Sound Control */}
+                <div className="absolute bottom-6 right-6 flex items-center space-x-3">
+                  <button
+                    onClick={() => setIsMuted(!isMuted)}
+                    className="p-3 rounded-full bg-slate-900/80 backdrop-blur-md text-white border border-white/10 hover:bg-slate-800 transition-all cursor-pointer"
+                  >
+                    {isMuted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
+                  </button>
+                </div>
+
+                {/* Title Badge */}
+                <div className="absolute top-6 left-6 pointer-events-none">
+                  <span className="px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-950/85 backdrop-blur-md text-blue-300 border border-white/10 shadow-lg">
+                    {videoSlides[currentSlide].title}
+                  </span>
+                </div>
+
+                {/* Slide index dots / indicators */}
+                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-2 bg-slate-950/40 backdrop-blur-md px-4 py-2 rounded-full border border-white/5">
+                  {videoSlides.map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setCurrentSlide(idx)}
+                      className={`w-2.5 h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
+                        currentSlide === idx 
+                          ? 'bg-blue-400 w-6' 
+                          : 'bg-white/40 hover:bg-white/70'
+                      }`}
+                      aria-label={`Go to slide ${idx + 1}`}
+                    />
+                  ))}
+                </div>
+              </motion.div>
+
+              {/* Right arrow */}
+              <button
+                onClick={handleNextSlide}
+                className="absolute right-4 sm:right-6 z-50 p-2 sm:p-3 rounded-full bg-slate-900/60 backdrop-blur-md text-white border border-white/10 hover:bg-slate-800/80 transition-all cursor-pointer group"
+              >
+                <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6 transition-transform group-hover:translate-x-0.5" />
+              </button>
+
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

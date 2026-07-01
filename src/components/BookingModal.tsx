@@ -258,7 +258,7 @@ export default function BookingModal({
                       Check-In / Departure
                     </label>
                     <div className="relative">
-                      <Calendar className="absolute left-4 top-3.5 h-4 w-4 text-slate-400" />
+                      <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                       <input
                         type="date"
                         value={checkIn}
@@ -272,7 +272,7 @@ export default function BookingModal({
                       Check-Out / Return
                     </label>
                     <div className="relative">
-                      <Calendar className="absolute left-4 top-3.5 h-4 w-4 text-slate-400" />
+                      <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                       <input
                         type="date"
                         value={checkOut}

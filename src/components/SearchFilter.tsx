@@ -146,7 +146,7 @@ export default function SearchFilter({ onSelectAndBook }: SearchFilterProps) {
               {activeTab === 'flight' || activeTab === 'car' ? 'Departure Date' : 'Check In'}
             </label>
             <div className="relative">
-              <Calendar className="absolute left-4 top-3.5 h-5 w-5 text-slate-400 pointer-events-none" />
+              <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 pointer-events-none" />
               <input
                 type="date"
                 value={checkIn}
@@ -162,7 +162,7 @@ export default function SearchFilter({ onSelectAndBook }: SearchFilterProps) {
               {activeTab === 'flight' || activeTab === 'car' ? 'Return Date' : 'Check Out'}
             </label>
             <div className="relative">
-              <Calendar className="absolute left-4 top-3.5 h-5 w-5 text-slate-400 pointer-events-none" />
+              <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 pointer-events-none" />
               <input
                 type="date"
                 value={checkOut}
